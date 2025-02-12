@@ -25,10 +25,10 @@
     <link rel="icon" href="./favicon.ico" type="image/x-icon"/>
     <link rel="shortcut icon" href="./favicon.ico" type="image/x-icon"/>
     <!-- CSS files -->
-    <link href="../dist/libs/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
-    <link href="../dist/libs/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
-    <link href="../dist/css/tabler.min.css" rel="stylesheet"/>
-    <link href="../dist/css/demo.min.css" rel="stylesheet"/>
+    <link href="../static/dist/libs/jqvmap/dist/jqvmap.min.css" rel="stylesheet"/>
+    <link href="../static/dist/libs/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
+    <link href="../static/dist/css/tabler.min.css" rel="stylesheet"/>
+    <link href="../static/dist/css/demo.min.css" rel="stylesheet"/>
     <style>
       body {
       	display: none;
@@ -90,7 +90,7 @@
             <div class="container-xl">
               <ul class="navbar-nav">
                 <li class="nav-item active">
-                  <a class="nav-link" href="./index.html" >
+                  <a class="nav-link" href="{{ url_for('admin_dashboard') }}" >
                     <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
                     </span>
                     <span class="nav-link-title">
@@ -136,30 +136,38 @@
                       <h3 class="card-title">Edit Profile</h3>
                     </div>
                     <div class="card-body">
-                      <form>
+                      {% with messages = get_flashed_messages(with_categories=true) %}
+                      {% if messages %}
+                          {% for category, message in messages %}
+                              <div class="alert alert-{{ category }}">{{ message }}</div>
+                          {% endfor %}
+                      {% endif %}
+                    {% endwith %}  
+                      <form method="POST">
                         <div class="row mb-3">
-                          <div class="col-auto">
-                            <span class="avatar avatar-lg" style="background-image: url(../static/avatars/005f.jpg)"></span>
-                          </div>
-                          <div class="col">
-                            <div class="mb-2">
-                              <label class="form-label">Nama Lengkap</label>
-                              <input type="text" class="form-control" value="Mika Aulia Nurhayati" placeholder=""/>
+                            <div class="col-auto">
+                                <span class="avatar avatar-lg" style="background-image: url(../static/avatars/005f.jpg)"></span>
                             </div>
-                          </div>
+                            <div class="col">
+                                <div class="mb-2">
+                                    <label class="form-label">Nama Perusahaan</label>
+                                    <input type="text" name="fullname" class="form-control" value="{{ user.fullname if user else '' }}" placeholder=""/>
+                                </div>
+                            </div>
                         </div>
                         <div class="mb-2">
-                          <label class="form-label">Username</label>
-                          <input class="form-control" placeholder=""/>
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" value="{{ user.username if user else '' }}" placeholder=""/>
                         </div>
                         <div class="mb-2">
-                          <label class="form-label">Password</label>
-                          <input type="password" class="form-control" value=""/>
+                            <label class="form-label">Password (Kosongkan jika tidak ingin mengubah)</label>
+                            <input type="password" name="password" class="form-control" placeholder=""/>
                         </div>
                         <div class="form-footer">
-                          <button class="btn btn-primary btn-block">Save</button>
+                            <button type="submit" class="btn btn-primary btn-block">Save</button>
                         </div>
-                      </form>
+                          
+                      </form>                    
                     </div>
                   </div>
             </div>
@@ -190,13 +198,13 @@
 
     
     <!-- Libs JS -->
-    <script src="../dist/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../dist/libs/jquery/dist/jquery.slim.min.js"></script>
-    <script src="../dist/libs/peity/jquery.peity.min.js"></script>
-    <script src="../dist/libs/apexcharts/dist/apexcharts.min.js"></script>
-    <script src="../dist/libs/flatpickr/dist/flatpickr.min.js"></script>
+    <script src="../static/dist/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/dist/libs/jquery/dist/jquery.slim.min.js"></script>
+    <script src="../static/dist/libs/peity/jquery.peity.min.js"></script>
+    <script src="../static/dist/libs/apexcharts/dist/apexcharts.min.js"></script>
+    <script src="../static/dist/libs/flatpickr/dist/flatpickr.min.js"></script>
     <!-- Tabler Core -->
-    <script src="../dist/js/tabler.min.js"></script>
+    <script src="../static/dist/js/tabler.min.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             flatpickr(document.getElementsByClassName('calendar-range'), {

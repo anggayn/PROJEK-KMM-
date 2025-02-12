@@ -93,6 +93,46 @@ class Admin(db.Model):
 def index():
     return redirect(url_for('login'))  
 
+# Route Profile
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))  # Redirect ke login jika belum login
+
+    # Ambil data pengguna dari database berdasarkan session['user_id']
+    user = Admin.query.filter_by(id=session['user_id']).first()
+
+    if not user:
+        return redirect(url_for('login'))  # Redirect jika user tidak ditemukan
+
+    if request.method == 'POST':
+        # Ambil data dari form
+        new_nama_perusahaan = request.form.get('fullname')
+        new_username = request.form.get('username')
+        new_password = request.form.get('password')
+
+        # Update database
+        user.nama_perusahaan = new_nama_perusahaan
+        user.username = new_username
+
+        # Update password jika diisi
+        if new_password:
+            user.password = new_password  # Pastikan hashing password jika diperlukan
+
+        db.session.commit()  # Simpan perubahan ke database
+        flash('Profil berhasil diperbarui!', 'success')  # Pesan sukses
+        return redirect(url_for('profile'))  # Refresh halaman
+
+    # Kirim data user ke template
+    user_data = {
+        'username': user.username,
+        'fullname': user.nama_perusahaan,
+        'role': user.role
+    }
+
+    return render_template('profile.html', user=user_data)
+
+
 
 # route untuk login
 @app.route('/sign-in', methods=['GET', 'POST'])
@@ -461,6 +501,11 @@ def admin_kamera_presensi():
 @app.route('/admin_lama_kerja')
 def admin_lama_kerja():
     return render_template('admin_lama_kerja.html')
+
+#Route Log Out
+@app.route('/logout')
+def logout():
+    return render_template('sign-in.html')    
 
 # Membuat tabel secara otomatis dan menambah data superadmin pertama kali
 with app.app_context():
